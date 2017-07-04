@@ -20,6 +20,7 @@ class GitlabDeployController extends Controller
 		$git_remote = !empty(config('gitlab-deploy.remote')) ? config('gitlab-deploy.remote') : 'origin';
 
 		// Limit to known servers
+		/*
 		if (!empty(config('gitlab-deploy.allowed_sources')) && !in_array($_SERVER['REMOTE_ADDR'], config('gitlab-deploy.allowed_sources'))) {
 			Log::error('Request must come from an approved IP');
 			return Response::json([
@@ -27,6 +28,7 @@ class GitlabDeployController extends Controller
 				'message' => 'Request must come from an approved IP',
 			], 500);
 		}
+		*/
 
 		// Collect the posted data
 		$postdata = json_decode($request->getContent(), TRUE);
