@@ -20,7 +20,7 @@ return [
     |
     */
 
-    'email_recipients' => env('GITLAB_DEPLOY_NOTIFICATION', []),
+    'email_recipients' => explode(',', env('GITLAB_DEPLOY_NOTIFICATION', '')),
 
     /*
     |--------------------------------------------------------------------------
@@ -63,7 +63,7 @@ return [
     |
     */
 
-    'allowed_sources' => env('GITLAB_DEPLOY_ALLOWED_SOURCES', []),
+    'allowed_sources' => explode(' ', env('GITLAB_DEPLOY_ALLOWED_SOURCES', '')),
 
     /*
     |--------------------------------------------------------------------------
