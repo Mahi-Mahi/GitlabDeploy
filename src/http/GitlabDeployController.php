@@ -93,12 +93,15 @@ class GitlabDeployController extends Controller
 		// git pull
 		$cmd = escapeshellcmd($git_path) . ' --git-dir=' . escapeshellarg($repo_dir . '/.git') . ' --work-tree=' . escapeshellarg($repo_dir) . ' pull ' . escapeshellarg($git_remote) . ' ' . escapeshellarg($current_branch) . ' > ' . escapeshellarg($repo_dir . '/storage/logs/gitlab-deploy.log');
 
+    $cmd = "cd ".$repo_dir." && git status && git pull";
+
+		exec($cmd, $output, $return);
+
 		$server_response = [
 			'cmd' => $cmd,
 			'user' => shell_exec('whoami'),
-			'exec' => exec($cmd, $output, $return),
-			'response'	=>	$output,
-			'return'		=>	$return
+			'return' => $return,
+			'output'	=>	implode(PHP_EOL, $output)
 		];
 
 		Log::info($server_response);
