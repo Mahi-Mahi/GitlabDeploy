@@ -1,15 +1,35 @@
 {
-    "name": "orphans/git-deploy-laravel",
-    "description": "Helps automate the deployment of projects onto servers by utilising Git web hooks.",
+    "name": "mahimahi/gitlab-deploy",
+    "description": "Helps automate the deployment of projects onto servers by utilising Gitlab web hooks",
     "license": "MIT",
+    "require": {
+        "php": ">=5.6.4",
+        "laravel/framework": ">=5.4"
+    },
+    "keywords": [
+        "laravel",
+        "git",
+        "gitlab",
+        "deployment"
+    ],
+    "authors": [
+        {
+            "name": "Olivier Mourlevat",
+            "email": "olivier.mourlevat@mahi-mahi.fr"
+        }
+    ],
     "autoload": {
         "psr-4": {
-            "Orphans\\GitDeploy\\": "src"
+            "MahiMahi\\GitlabDeploy\\": "src"
         }
     },
-    "require": {
-        "illuminate/http": "~5",
-        "illuminate/config": "~5",
-        "illuminate/support": "~5"
+    "minimum-stability": "stable",
+    "extras": {
+        "laravel": {
+            "providers": [
+                "MahiMahi\\GitlabDeploy\\GitlabDeployServiceProvider"
+            ]
+        }
     }
 }
+
