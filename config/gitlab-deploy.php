@@ -2,6 +2,8 @@
 
 return [
 
+    'secret_token'  =>  env('GITLAB_DEPLOY_SECRET_TOKEN', ''),
+
     /*
     |--------------------------------------------------------------------------
     | Email recipients
@@ -18,7 +20,7 @@ return [
     |
     */
 
-    'email_recipients' => [],
+    'email_recipients' => env('GITLAB_DEPLOY_NOTIFICATION', []),
 
     /*
     |--------------------------------------------------------------------------
@@ -45,7 +47,8 @@ return [
     |
     */
 
-    'repo_path' => '',
+    'repo_path' => env('GITLAB_DEPLOY_REPO_PATH', ''),
+
 
     /*
     |--------------------------------------------------------------------------
@@ -60,7 +63,7 @@ return [
     |
     */
 
-    'allowed_sources' => [],
+    'allowed_sources' => env('GITLAB_DEPLOY_ALLOWED_SOURCES', []),
 
     /*
     |--------------------------------------------------------------------------
@@ -70,8 +73,8 @@ return [
     | The name of the remote repository to pull the changes from
     |
     */
-    
-    'remote' => 'origin',
+
+    'remote' => env('GITLAB_DEPLOY_ALLOWED_SOURCES', 'origin'),
 
     /*
     |--------------------------------------------------------------------------
@@ -83,7 +86,7 @@ return [
     | Leave blank to let the system detect using the current PATH variable
     |
     */
-    
-    'git_path' => '',
+
+    'git_path' => env('GITLAB_DEPLOY_ALLOWED_SOURCES', ''),
 
 ];
