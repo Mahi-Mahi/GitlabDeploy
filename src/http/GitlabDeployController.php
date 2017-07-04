@@ -16,7 +16,6 @@ class GitlabDeployController extends Controller
 		Log::debug("gitHook");
 		Log::debug(request()->all());
 
-
 		$git_path = !empty(config('gitlab-deploy.git_path')) ? config('gitlab-deploy.git_path') : 'git';
 		$git_remote = !empty(config('gitlab-deploy.remote')) ? config('gitlab-deploy.remote') : 'origin';
 

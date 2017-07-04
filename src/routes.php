@@ -1,3 +1,3 @@
 <?php
 
-Route::post('git-deploy', 'Orphans\GitDeploy\Http\GitDeployController@gitHook');
+Route::post('git-deploy', 'MahiMahi\GitlabDeploy\Http\GitlabDeployController@gitHook');
