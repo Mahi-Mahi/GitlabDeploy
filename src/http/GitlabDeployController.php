@@ -96,7 +96,9 @@ class GitlabDeployController extends Controller
 		$server_response = [
 			'cmd' => $cmd,
 			'user' => shell_exec('whoami'),
-			'response' => shell_exec($cmd),
+			'exec' => exec($cmd, $output, $return),
+			'response'	=>	$output,
+			'return'		=>	$return
 		];
 
 
