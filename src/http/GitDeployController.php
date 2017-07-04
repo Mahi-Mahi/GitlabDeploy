@@ -1,32 +1,28 @@
 <?php
 
-namespace Orphans\GitDeploy\Http;
+namespace MahiMahi\GitlabDeploy\Http;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
-// use App\Http\Requests;
 
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
+use Log;
 
-class GitDeployController extends Controller
+class GitlabDeployController extends Controller
 {
 	public function gitHook(Request $request)
 	{
 
-
-		// create a log channel
-		$log = new Logger('gitdeploy');
-		$log->pushHandler(new StreamHandler(storage_path('logs/gitdeploy.log'), Logger::WARNING));
+		Log::debug("gitHook");
+		Log::debug(request()->all());
 
 
-		$git_path = !empty(config('gitdeploy.git_path')) ? config('gitdeploy.git_path') : 'git';
-		$git_remote = !empty(config('gitdeploy.remote')) ? config('gitdeploy.remote') : 'origin';
+		$git_path = !empty(config('gitlab-deploy.git_path')) ? config('gitlab-deploy.git_path') : 'git';
+		$git_remote = !empty(config('gitlab-deploy.remote')) ? config('gitlab-deploy.remote') : 'origin';
 
 		// Limit to known servers
-		if (!empty(config('gitdeploy.allowed_sources')) && !in_array($_SERVER['REMOTE_ADDR'], config('gitdeploy.allowed_sources'))) {
-			$log->addError('Request must come from an approved IP');
+		if (!empty(config('gitlab-deploy.allowed_sources')) && !in_array($_SERVER['REMOTE_ADDR'], config('gitlab-deploy.allowed_sources'))) {
+			Log::error('Request must come from an approved IP');
 			return Response::json([
 				'success' => false,
 				'message' => 'Request must come from an approved IP',
@@ -36,7 +32,7 @@ class GitDeployController extends Controller
 		// Collect the posted data
 		$postdata = json_decode($request->getContent(), TRUE);
 		if (empty($postdata)) {
-			$log->addError('Web hook data does not look valid');
+			Log::error('Web hook data does not look valid');
 			return Response::json([
 				'success' => false,
 				'message' => 'Web hook data does not look valid',
@@ -44,9 +40,9 @@ class GitDeployController extends Controller
 		}
 
 		// Check the config's directory
-		$repo_dir = config('gitdeploy.repo_path');
+		$repo_dir = config('gitlab-deploy.repo_path');
 		if (!empty($repo_dir) && !file_exists($repo_dir.'/.git/config')) {
-			$log->addError('Invalid repo path in config');
+			Log::error('Invalid repo path in config');
 			return Response::json([
 				'success' => false,
 				'message' => 'Invalid repo path in config',
@@ -71,7 +67,7 @@ class GitDeployController extends Controller
 
 		// So, do we have something valid?
 		if ($repo_dir === '/' || !file_exists($repo_dir.'/.git/config')) {
-			$log->addError('Could not determine the repo path');
+			Log::error('Could not determine the repo path');
 			return Response::json([
 				'success' => false,
 				'message' => 'Could not determine the repo path',
@@ -88,7 +84,7 @@ class GitDeployController extends Controller
 
 		// If the refs don't matchthis branch, then no need to do a git pull
 		if ($current_branch !== $pushed_branch){
-			$log->addWarning('Pushed refs do not match current branch');
+			Log::warning('Pushed refs do not match current branch');
 			return Response::json([
 				'success' => false,
 				'message' => 'Pushed refs do not match current branch',
@@ -96,7 +92,7 @@ class GitDeployController extends Controller
 		}
 
 		// git pull
-		$cmd = escapeshellcmd($git_path) . ' --git-dir=' . escapeshellarg($repo_dir . '/.git') . ' --work-tree=' . escapeshellarg($repo_dir) . ' pull ' . escapeshellarg($git_remote) . ' ' . escapeshellarg($current_branch) . ' > ' . escapeshellarg($repo_dir . '/storage/logs/gitdeploy.log');
+		$cmd = escapeshellcmd($git_path) . ' --git-dir=' . escapeshellarg($repo_dir . '/.git') . ' --work-tree=' . escapeshellarg($repo_dir) . ' pull ' . escapeshellarg($git_remote) . ' ' . escapeshellarg($current_branch) . ' > ' . escapeshellarg($repo_dir . '/storage/logs/gitlab-deploy.log');
 
 		$server_response = [
 			'cmd' => $cmd,
@@ -105,7 +101,7 @@ class GitDeployController extends Controller
 		];
 
 
-		if (!empty(config('gitdeploy.email_recipients'))) {
+		if (!empty(config('gitlab-deploy.email_recipients'))) {
 
 			// Humanise the commit log
 			foreach ($postdata['commits'] as $commit_key => $commit) {
@@ -127,15 +123,15 @@ class GitDeployController extends Controller
 			// Use package's own sender or the project default?
 			$addressdata['sender_name'] = config('mail.from.name');
 			$addressdata['sender_address'] = config('mail.from.address');
-			if (config('gitdeploy.email_sender.address') !== null) {
-				$addressdata['sender_name'] = config('gitdeploy.email_sender.name');
-				$addressdata['sender_address'] = config('gitdeploy.email_sender.address');
+			if (config('gitlab-deploy.email_sender.address') !== null) {
+				$addressdata['sender_name'] = config('gitlab-deploy.email_sender.name');
+				$addressdata['sender_address'] = config('gitlab-deploy.email_sender.address');
 			}
 
 			// Recipients
-			$addressdata['recipients'] = config('gitdeploy.email_recipients');
+			$addressdata['recipients'] = config('gitlab-deploy.email_recipients');
 
-			\Mail::send('gitdeploy::email', [ 'server' => $server_response, 'git' => $postdata ], function($message) use ($postdata, $addressdata) {
+			\Mail::send('gitlab-deploy::email', [ 'server' => $server_response, 'git' => $postdata ], function($message) use ($postdata, $addressdata) {
 				$message->from($addressdata['sender_address'], $addressdata['sender_name']);
 				foreach ($addressdata['recipients'] as $recipient) {
 					$message->to($recipient['address'], $recipient['name']);
