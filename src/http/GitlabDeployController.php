@@ -101,6 +101,7 @@ class GitlabDeployController extends Controller
 			'return'		=>	$return
 		];
 
+		Log::info($server_response);
 
 		if (!empty(config('gitlab-deploy.email_recipients'))) {
 
