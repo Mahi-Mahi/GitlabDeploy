@@ -141,7 +141,7 @@ class GitlabDeployController extends Controller
 			\Mail::send('gitlab-deploy::email', [ 'server' => $server_response, 'git' => $postdata ], function($message) use ($postdata, $addressdata) {
 				$message->from($addressdata['sender_address'], $addressdata['sender_name']);
 				foreach ($addressdata['recipients'] as $recipient) {
-					$message->to($recipient['address'], $recipient['name']);
+					$message->to($recipient);
 				}
 				$message->subject('Repo: ' . $postdata['repository']['name'] . ' updated');
 			});
