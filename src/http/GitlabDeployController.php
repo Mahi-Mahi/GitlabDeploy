@@ -93,7 +93,7 @@ class GitlabDeployController extends Controller
 		// git pull
 		$cmd = escapeshellcmd($git_path) . ' --git-dir=' . escapeshellarg($repo_dir . '/.git') . ' --work-tree=' . escapeshellarg($repo_dir) . ' pull ' . escapeshellarg($git_remote) . ' ' . escapeshellarg($current_branch) . ' > ' . escapeshellarg($repo_dir . '/storage/logs/gitlab-deploy.log');
 
-    $cmd = "cd ".$repo_dir." && git status && git pull";
+    $cmd = "cd ".$repo_dir." && git status && git pull && composer update";
 
 		exec($cmd, $output, $return);
 
