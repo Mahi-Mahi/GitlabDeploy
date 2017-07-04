@@ -12,7 +12,7 @@
 		</tr>
 		<tr>
 			<td valign="top" align="right"><strong>Response</strong></td>
-			<td valign="top">{{ $server['response'] }}</td>
+			<td valign="top">{{ $server['output'] }}</td>
 		</tr>
 	</table>
 	<table cellspacing="0" cellpadding="10" width="100%" style="background:#F6F6F6; border:1px solid #EEEEEE; font-size:11pt;">
